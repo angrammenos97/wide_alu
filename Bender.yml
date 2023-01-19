@@ -2,7 +2,6 @@ package:
   name: wide_alu
   
 dependencies:
-  ~
   
 sources:
   - "rtl/wide_alu_pkg.sv"
