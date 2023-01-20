@@ -1,6 +1,22 @@
 package:
   name: wide_alu
-  
+
+dependencies:
+  axi:                { git: "https://github.com/pulp-platform/axi.git", version: 0.29.1 }
+  register_interface: { git: "https://github.com/pulp-platform/register_interface.git", version: 0.3.1 }
+  ibex:               { git: "https://github.com/pulp-platform/ibex.git", rev: "pulpissimo-v6.1.2" }
+
 sources:
-  - "rtl/wide_alu_pkg.sv"
-  - "rtl/wide_alu.sv"
+  # - "rtl/wide_alu_pkg.sv"
+  # - "rtl/wide_alu_reg_pkg.sv"
+  # - "rtl/wide_alu_reg_top.sv"
+  # - "rtl/wide_alu.sv"
+  - include_dirs:
+    - /home/anastasis/Pulp/pulpissimo/.bender/git/checkouts/ibex-04f714238b448d27/vendor/lowrisc_ip/ip/prim/rtl
+    # - ../register_interface/include
+    # - ../register_interface/vendor/lowrisc_opentitan/include
+    files:
+      - "rtl/wide_alu_pkg.sv"
+      - "rtl/wide_alu_reg_pkg.sv"
+      - "rtl/wide_alu_reg_top.sv"
+      - "rtl/wide_alu.sv"
