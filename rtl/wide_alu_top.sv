@@ -17,7 +17,7 @@ module wide_alu_top
     import wide_alu_reg_pkg::wide_alu_reg2hw_t;
     import wide_alu_reg_pkg::wide_alu_hw2reg_t;
 
-    REG_BUS axi_to_reg_file;
+    REG_BUS #(.ADDR_WIDTH(AXI_ADDR_WIDTH), .DATA_WIDTH(AXI_DATA_WIDTH)) axi_to_reg_file();
     wide_alu_reg2hw_t reg_file_to_ip;
     wide_alu_hw2reg_t ip_to_reg_file;
 
@@ -32,18 +32,29 @@ module wide_alu_top
     `REG_BUS_ASSIGN_TO_REQ  (to_reg_file_req, axi_to_reg_file)
     `REG_BUS_ASSIGN_FROM_RSP(axi_to_reg_file, from_reg_file_rsp)
 
-    wide_alu_reg_top wide_alu_reg_top_i (
+    wide_alu_reg_top #(
+        .reg_req_t(reg_req_t),
+        .reg_rsp_t(reg_rsp_t)
+    ) wide_alu_reg_top_i (
         .clk_i      (clk_i),
         .rst_ni     (rst_ni),
         .reg_req_i  (to_reg_file_req),
         .reg_rsp_o  (from_reg_file_rsp),
+        .reg2hw     (reg_file_to_ip),
+        .hw2reg     (ip_to_reg_file),
         .devmode_i  (1'b1)
     );
 
-    axi_to_reg_intf axi_to_reg_intf_i (
+    axi_to_reg_intf #(
+        .ADDR_WIDTH (AXI_ADDR_WIDTH),
+        .DATA_WIDTH (AXI_DATA_WIDTH),
+        .ID_WIDTH   (AXI_ID_WIDTH),
+        .USER_WIDTH (AXI_USER_WIDTH),
+        .DECOUPLE_W (0)
+    ) axi_to_reg_intf_i (
         .clk_i          (clk_i),
         .rst_ni         (rst_ni),
-        .test_mode_i    (testmode_i),
+        .testmode_i     (test_mode_i),
         .in             (slv),
         .reg_o          (axi_to_reg_file)
     );
@@ -61,8 +72,8 @@ module wide_alu_top
         .deaccel_factor_o       (ip_to_reg_file.ctrl2.delay.d),
         .op_sel_we_i            (reg_file_to_ip.ctrl2.opsel.qe),
         .op_sel_i               (wide_alu_pkg::optype_e'(reg_file_to_ip.ctrl2.opsel.q)),
-        .op_sel_o               (wide_alu_pkg::optype_e'(ip_to_reg_file.ctrl2.opsel.q)),
-        .status_o               (wide_alu_pkg::status_e'(ip_to_reg_file.status.d))
+        .op_sel_o               (ip_to_reg_file.ctrl2.opsel.d),
+        .status_o               (ip_to_reg_file.status.d)
     );
 
 endmodule

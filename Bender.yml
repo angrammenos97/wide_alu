@@ -20,3 +20,4 @@ sources:
       - "rtl/wide_alu_reg_pkg.sv"
       - "rtl/wide_alu_reg_top.sv"
       - "rtl/wide_alu.sv"
+      - "rtl/wide_alu_top.sv"
